@@ -68,6 +68,12 @@ class Production():
                     return False     
         return True
 
+    def get_symbol(self):
+        return self.symbol
+    
+    def get_derivation(self):
+        return self.derivation
+
 class Grammar():
     def __init__(self, grammar_path):
         self.non_terminal_symbols = []
@@ -118,10 +124,72 @@ class Grammar():
         Rule 1: All non terminal symbol have at least 1 production
 
         Rule 2: All terminal symbol appear in at least 1 production
+
+        Rule 3: The production symbol is always a terminal symbol previously defined
+
+        Rule 4: All derivation symbols are included in the grammar
+        """
+        if not (self.rule1() and self.rule2() and self.rule3() and self.rule4()):
+            print("The grammar have inconsistencies")
+            return
+        print("The grammar have no inconsistency!")
+
+        if not self.validate_grammar_gld():
+            print("The grammar is not GLD")
+            return
+        
+        print("The grammar is OK!")
+        return
+        
+    def rule1(self):
+        """
+        All non terminal symbol have at least 1 production
+        """
+        for non_term in self.non_terminal_symbols:
+            count = 0
+            for prod in self.productions:
+                if non_term == prod.get_symbol():
+                    count += 1
+            if count == 0:
+                print("Error in Grammar Validation, rule1. The non terminal symbol: ", non_term, " have 0 productions")
+                return False
+        return True
+
+    def rule2(self):
+        """
+        All terminal symbol appear in at least 1 production
+        """
+        for term in self.terminal_symbols:
+            count = 0
+            for prod in self.productions:
+                if term in prod.get_derivation():
+                    count += 1
+            if count == 0:
+                print("Error in Grammar Validation, rule2. The terminal symbol: ", term, " is not being used in any derivation")
+                return False
+        return True
+    
+    def rule3(self):
+        """
+        The production symbol is always a terminal symbol previously defined
         """
         for prod in self.productions:
-            if not prod.is_prod_valid_gld(self.non_terminal_symbols, self.terminal_symbols):
+            if prod.get_symbol() not in self.non_terminal_symbols:
+                print("Error in Grammar Validation, rule3. The terminal symbol: ", prod.get_symbol(), " can't derivate a production")
                 return False
+        return True
+    
+    def rule4(self):
+        """
+        All derivation symbols are included in the grammar
+        """
+        for prod in self.productions:
+            deriv = prod.get_derivation()
+            for char in deriv:
+                if not (char in self.non_terminal_symbols or char in self.terminal_symbols) and char != "e":
+                    print("Error in Grammar Validation, rule4. The symbol: ", char, " is not defined")
+                    return False
+        return True
 
     def validate_grammar_gld(self):
         """
@@ -130,3 +198,4 @@ class Grammar():
         for prod in self.productions:
             if not prod.is_prod_valid_gld(self.non_terminal_symbols, self.terminal_symbols):
                 return False
+        return True

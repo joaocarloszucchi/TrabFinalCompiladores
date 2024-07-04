@@ -1,0 +1,10 @@
+G={{S,A,B},{0,1},S,{P}}
+P={{S->A|B|e}, {A->0B|e}, {B->1A|e}}
+
+ex: 0, 1, 01, 10, 010, 101, 0101, 1010
+
+G = {{1}, {2}, 3, {4}}
+    1   conjunto de não terminais
+    2   conjunto de terminais
+    3   símbolo inicial
+    4   produções

@@ -1,0 +1,26 @@
+Um Interpretador para Gramáticas Regulares
+
+O objetivo deste trabalho é a criação de uma gramática para a representação de
+Gramáticas Regulares (GR) e a implementação de um interpretador para estas
+gramáticas, permitindo o reconhecimento (ou não) de palavras de acordo com sua
+especificação. Deverão ser tratados os erros da especificação da GR, se existirem.
+
+A gramática deve permitir representar os 4 elementos da representação formal de
+uma GR, a qual deverá estar armazenado em um arquivo para sua leitura.
+Outro pré-requisito é que GR deve ser do tipo Gramática Linear à Direita (GLD).
+
+Portanto, o parser deve validar a gramática recebida, ou seja, se ela é uma GLD.
+
+A partir da validação da Gramática Regular fornecida pelo usuário, o interpretador
+solicitará (em tempo de execução) ao usuário uma palavra para ser validada. Caso
+ela pertença a linguagem da GR, deverá ser emitida uma mensagem de validação,
+exibindo os movimentos entre símbolos não-terminais, conforme o programa percorre
+as produções da gramática e reconhece os símbolos terminais. Caso negativo, deverá
+ser enviada uma mensagem de erro, mostrando a posição da palavra a ser testada
+em que houve o problema.
+
+
+GLD(no left recursion):
+    A -> wB | w
+
+n máximo 1 não terminal por produção, e este está sempre a esquerda

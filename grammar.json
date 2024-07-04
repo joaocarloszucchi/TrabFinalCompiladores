@@ -3,9 +3,9 @@
     "terminal_symbols": ["0", "1"],
     "initial_symbol": "S",
     "productions": [
-      {"symbol": "S", "derivations": ["A", "B", "e"]},
+      {"symbol": "S", "derivations": ["1A", "0B", "e"]},
       {"symbol": "A", "derivations": ["0B", "e"]},
       {"symbol": "B", "derivations": ["1A", "e"]}
     ]
-  }
+}
   

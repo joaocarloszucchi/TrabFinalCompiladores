@@ -1,4 +1,5 @@
 import json
+import sys
 
 class Production():
     def __init__(self, symbol, derivation):
@@ -37,13 +38,16 @@ class Production():
 
     def gld_rule1(self, terminal_symbols):
         """
-        At least 1 non terminal symbol
+        At least 1 terminal symbol
         """
         count = 0
         for char in self.derivation:
             if char in terminal_symbols:
                 count += 1
-        return count > 0
+        if count == 0:
+            print("Error in GLD Validation, rule1. The derivation ", self.get_print_string(), " don't have a terminal symbol")
+            return False
+        return True
 
     def gld_rule2(self, non_terminal_symbols):
         """
@@ -53,7 +57,10 @@ class Production():
         for char in self.derivation:
             if char in non_terminal_symbols:
                 count += 1
-        return count < 2
+        if count >= 2:
+            print("Error in GLD Validation, rule2. The derivation ", self.get_print_string(), " have more than 1 non terminal symbols")
+            return False
+        return True
     
     def gld_rule3(self, non_terminal_symbols, terminal_symbols):
         """
@@ -65,6 +72,7 @@ class Production():
                 count_non_terminal += 1
             elif char in terminal_symbols:
                 if(count_non_terminal > 0):
+                    print("Error in GLD Validation, rule3. The derivation ", self.get_print_string(), " has a non terminal symbol before a terminal symbol")
                     return False     
         return True
 
@@ -73,6 +81,9 @@ class Production():
     
     def get_derivation(self):
         return self.derivation
+
+    def get_print_string(self):
+        return str(self.symbol) + " -> " + str(self.derivation)
 
 class Grammar():
     def __init__(self, grammar_path):
@@ -130,13 +141,11 @@ class Grammar():
         Rule 4: All derivation symbols are included in the grammar
         """
         if not (self.rule1() and self.rule2() and self.rule3() and self.rule4()):
-            print("The grammar have inconsistencies")
-            return
+            sys.exit("The grammar have inconsistencies")
         print("The grammar have no inconsistency!")
 
         if not self.validate_grammar_gld():
-            print("The grammar is not GLD")
-            return
+            sys.exit("The grammar is not GLD")
         
         print("The grammar is OK!")
         return

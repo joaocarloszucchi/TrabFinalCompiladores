@@ -24,3 +24,10 @@ GLD(no left recursion):
     A -> wB | w
 
 n máximo 1 não terminal por produção, e este está sempre a esquerda
+
+
+ROADMAP:
+
+(1) read grammar                OK
+(2) validates grammar           OK
+(3) validates GLD               OK

@@ -89,7 +89,7 @@ class Grammar():
     def __init__(self, grammar_path):
         self.non_terminal_symbols = []
         self.terminal_symbols = []
-        self.inittial_symbol = None
+        self.initial_symbol = None
         self.productions = []
         self.load_grammar(grammar_path)
 
@@ -208,3 +208,100 @@ class Grammar():
             if not prod.is_prod_valid_gld(self.non_terminal_symbols, self.terminal_symbols):
                 return False
         return True
+
+    def validate_sentence(self, word):
+        """
+        inittial validation, before going to computation
+
+        checks if the word contains only terminal symbols that belong to the alphabet
+        """ 
+        for char in word:
+            if char not in self.terminal_symbols:
+                print("Word can't be recognized because the symbol ", char, " does not belongs to the language")
+                return
+            
+        self.compute(word=word, stack=self.initial_symbol)
+
+    def compute(self, word, stack):
+        #print("1|word: ", word, "|stack:  ", stack)
+
+        if len(word) == 0:
+            if len(stack) == 0 or stack == "e":
+                print("Word belongs to the language!")
+                return 1
+
+        #print("len word: ", len(word), "|len stack: ", len(stack), "|min: ", min(len(word), len(stack)))
+        tam = min(len(word), len(stack)) - 1
+
+        if tam == 0:
+            if word[0] == stack[0]:
+                print("Going to remove")
+                print("     Ri|word: ", word, "|stack:  ", stack)
+                word = word[1:]
+                stack = stack[1:]
+                print("     Rf|word: ", word, "|stack:  ", stack)
+            elif stack[0] in self.terminal_symbols:
+                print("Word doesn't belong to the language")
+                return -1
+        else:
+            for i in range(tam):
+                if word[i] == stack[i]:
+                    print("Going to remove")
+                    print("     Ri|word: ", word, "|stack:  ", stack)
+                    word = word[1:]
+                    stack = stack[1:]
+                    print("     Rf|word: ", word, "|stack:  ", stack)
+                    i -= 1
+                elif stack[i] in self.terminal_symbols:
+                    print("Word doesn't belong to the language")
+                    return -1
+                else:
+                    break
+
+        #print("2|word: ", word, "|stack:  ", stack)
+
+        productions = self.get_productions(stack[0])
+
+        if len(productions) == 0:
+            print("Word doesn't belong to the language")
+            return -1
+        
+        word_copy = word
+        stack_copy = stack
+
+        for prod in productions:
+            deriv = prod.get_derivation()
+            if len(word) == 0:
+                if deriv == "e":
+                    stack = self.derivate_stack(stack, deriv)
+                    #print("3|word: ", word, "|stack:  ", stack)
+
+                    if self.compute(word=word, stack=stack) == -1:
+                        stack = stack_copy
+                        word = word_copy
+                    else:
+                        return 1
+            elif deriv[0] == word[0]:
+                stack = self.derivate_stack(stack, deriv)
+
+                #print("4|word: ", word, "|stack:  ", stack)
+
+                if self.compute(word=word, stack=stack) == -1:
+                    stack = stack_copy
+                    word = word_copy
+                else:
+                    return 1
+        return -1
+
+    def get_productions(self, symbol):
+        productions = []
+        for prod in self.productions:
+            if prod.get_symbol() == symbol:
+                productions.append(prod)
+        return productions
+    
+    def derivate_stack(self, stack, deriv):
+        stack = stack[1:]
+        stack = deriv + stack
+        return stack
+    

@@ -7,3 +7,4 @@ if __name__ == "__main__":
 
     grammar.validate_grammar()
     
+    grammar.validate_sentence("101010")

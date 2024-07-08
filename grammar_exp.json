@@ -1,8 +1,8 @@
 {
     "non_terminal_symbols": ["S"],
-    "terminal_symbols": ["n", "+", "-", "*", "/"],
+    "terminal_symbols": ["int", "+", "-", "*", "/"],
     "initial_symbol": "S",
     "productions": [
-      {"symbol": "S", "derivations": ["n+S", "n-S", "n*S", "n/S", "n"]}
+      {"symbol": "S", "derivations": ["int + S", "int - S", "int * S", "int / S", "int"]}
     ]
 }

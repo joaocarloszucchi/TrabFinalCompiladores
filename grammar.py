@@ -230,7 +230,7 @@ class Grammar():
     def compute(self, word, stack):
         print("                     |word: ", word, "|stack:  ", stack)
 
-        #if the word, then it has been fully validated
+        #the word has been fully validated
         if len(word) == 0:
             #if the stack is empty or has only and empty symbol, accepts
             if len(stack) == 0 or stack == "e":
@@ -263,6 +263,12 @@ class Grammar():
                 else:
                     break
                 i = i + 1
+
+        #the word has been fully validated
+        if len(word) == 0:
+            #if the stack is empty or has only and empty symbol, accepts
+            if len(stack) == 0 or stack == "e":
+                return 1
 
         productions = self.get_productions(stack[0])
 

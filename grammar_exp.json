@@ -1,0 +1,8 @@
+{
+    "non_terminal_symbols": ["S"],
+    "terminal_symbols": ["n", "+", "-", "*", "/"],
+    "initial_symbol": "S",
+    "productions": [
+      {"symbol": "S", "derivations": ["n+S", "n-S", "n*S", "n/S", "n"]}
+    ]
+}

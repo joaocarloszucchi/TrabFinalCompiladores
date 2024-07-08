@@ -220,80 +220,93 @@ class Grammar():
                 print("Word can't be recognized because the symbol ", char, " does not belongs to the language")
                 return
             
-        self.compute(word=word, stack=self.initial_symbol)
+        result = self.compute(word=word, stack=self.initial_symbol)
+
+        if result == 1:
+            print("Word belongs to the language!")
+        else:
+            print("Word doesn't belongs to the language!")
 
     def compute(self, word, stack):
-        #print("1|word: ", word, "|stack:  ", stack)
+        print("                     |word: ", word, "|stack:  ", stack)
 
+        #if the word, then it has been fully validated
         if len(word) == 0:
+            #if the stack is empty or has only and empty symbol, accepts
             if len(stack) == 0 or stack == "e":
-                print("Word belongs to the language!")
                 return 1
 
-        #print("len word: ", len(word), "|len stack: ", len(stack), "|min: ", min(len(word), len(stack)))
         tam = min(len(word), len(stack)) - 1
 
         if tam == 0:
             if word[0] == stack[0]:
-                print("Going to remove")
-                print("     Ri|word: ", word, "|stack:  ", stack)
+                char = word[0]
                 word = word[1:]
                 stack = stack[1:]
-                print("     Rf|word: ", word, "|stack:  ", stack)
+                print("Recognizing symbol:", char)
+                print("                     |word: ", word, "|stack:  ", stack)
             elif stack[0] in self.terminal_symbols:
                 print("Word doesn't belong to the language")
                 return -1
         else:
-            for i in range(tam):
+            i = 0
+            while i < tam:
                 if word[i] == stack[i]:
-                    print("Going to remove")
-                    print("     Ri|word: ", word, "|stack:  ", stack)
+                    char = word[0]
                     word = word[1:]
                     stack = stack[1:]
-                    print("     Rf|word: ", word, "|stack:  ", stack)
+                    print("Recognizing symbol:", char)
+                    print("                     |word: ", word, "|stack:  ", stack)
                     i -= 1
                 elif stack[i] in self.terminal_symbols:
-                    print("Word doesn't belong to the language")
                     return -1
                 else:
                     break
-
-        #print("2|word: ", word, "|stack:  ", stack)
+                i = i + 1
 
         productions = self.get_productions(stack[0])
 
+        #this will happend when the symbol is a terminal symbol
         if len(productions) == 0:
-            print("Word doesn't belong to the language")
             return -1
         
         word_copy = word
         stack_copy = stack
 
+        #looks for a valid production
         for prod in productions:
             deriv = prod.get_derivation()
             if len(word) == 0:
                 if deriv == "e":
                     stack = self.derivate_stack(stack, deriv)
-                    #print("3|word: ", word, "|stack:  ", stack)
+                    print("Derivating: ", prod.get_print_string())
 
+                    #if this production flow leads to an error, restore the word and the stack and try another possible production
                     if self.compute(word=word, stack=stack) == -1:
                         stack = stack_copy
                         word = word_copy
+                        print("Restoring due to error")
+                        print("                     |word: ", word, "|stack:  ", stack)
                     else:
                         return 1
             elif deriv[0] == word[0]:
                 stack = self.derivate_stack(stack, deriv)
+                print("Derivating: ", prod.get_print_string())
 
-                #print("4|word: ", word, "|stack:  ", stack)
-
+                #if this production flow leads to an error, restore the word and the stack and try another possible production
                 if self.compute(word=word, stack=stack) == -1:
                     stack = stack_copy
                     word = word_copy
+                    print("Restoring due to error")
+                    print("                     |word: ", word, "|stack:  ", stack)
                 else:
                     return 1
         return -1
 
     def get_productions(self, symbol):
+        """
+            Returns all the productions of a non terminal symbol
+        """
         productions = []
         for prod in self.productions:
             if prod.get_symbol() == symbol:
@@ -301,7 +314,14 @@ class Grammar():
         return productions
     
     def derivate_stack(self, stack, deriv):
+        """
+        Updates the stack with the new production
+        """
         stack = stack[1:]
+        if deriv == "e":
+            return stack
         stack = deriv + stack
         return stack
+
+
     

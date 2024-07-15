@@ -3,8 +3,8 @@
     "terminal_symbols": ["0", "1"],
     "initial_symbol": "S",
     "productions": [
-      {"symbol": "S", "derivations": ["1A", "0B", "e", "11A", "00B"]},
-      {"symbol": "A", "derivations": ["0B", "e"]},
-      {"symbol": "B", "derivations": ["1A", "e"]}
+      {"symbol": "S", "derivations": ["1 A", "0 B", "e"]},
+      {"symbol": "A", "derivations": ["0 B", "e"]},
+      {"symbol": "B", "derivations": ["1 A", "e"]}
     ]
 }

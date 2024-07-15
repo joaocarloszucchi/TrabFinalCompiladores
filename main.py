@@ -7,7 +7,7 @@ if __name__ == "__main__":
     #grammar.validate_grammar()
     #grammar.validate_sentence("111010101")
 
-    grammar = Grammar('grammar_exp.json')
+    grammar = Grammar('grammar_libre.json')
     grammar.print()
     grammar.validate_grammar()
 

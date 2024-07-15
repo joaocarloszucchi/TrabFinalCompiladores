@@ -44,7 +44,7 @@ class Production():
         for char in self.derivation:
             if char in terminal_symbols:
                 count += 1
-        if count == 0:
+        if count == 0 and char != "e":
             print("Error in GLD Validation, rule1. The derivation ", self.get_print_string(), " don't have a terminal symbol")
             return False
         return True
@@ -237,7 +237,7 @@ class Grammar():
     def compute(self, word, stack):
         print("                     |word: ", word, "|stack:  ", stack)
 
-        if len(stack) == 0 or stack == "e":
+        if len(stack) == 0:
             if len(word) == 0:
                 return 1
             return -1
@@ -268,9 +268,11 @@ class Grammar():
                     return -1
                 else:
                     break
+                if len(word) == 0:
+                    break
                 i = i + 1
 
-        if len(stack) == 0 or stack == "e":
+        if len(stack) == 0:
             if len(word) == 0:
                 return 1
             return -1
@@ -288,7 +290,7 @@ class Grammar():
         for prod in productions:
             deriv = prod.get_derivation()
             if len(word) == 0:
-                if deriv == "e":
+                if "e" in deriv:
                     stack = self.derivate_stack(stack, deriv)
                     print("Derivating: ", prod.get_print_string())
 
@@ -333,7 +335,4 @@ class Grammar():
         if deriv == ["e"]:
             return stack
         stack = deriv + stack
-        return stack
-
-
-    
+        return stack    

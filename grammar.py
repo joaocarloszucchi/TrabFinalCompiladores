@@ -214,27 +214,33 @@ class Grammar():
     def validate_sentence(self, word):
         """
         inittial validation, before going to computation
-
-        checks if the word contains only terminal symbols that belong to the alphabet
         """ 
-        tokens = word.split()
-        print("\nlist of tokens:\n\n", tokens, "\n")
-
-        for token in tokens:
-            if token not in self.terminal_symbols:
-                print("Word can't be recognized because the symbol ", token, " does not belongs to the language")
-                return
+        res, tokens = self.lexer(word)
+        if not res:
+            print("Lexer error, token not expected")
+            return False
         
         stack = []
         stack.append(self.initial_symbol)
-        result = self.compute(word=tokens, stack=stack)
+        result = self.sintatic_analysis(word=tokens, stack=stack)
 
         if result == 1:
             print("Word belongs to the language!")
         else:
             print("Word doesn't belongs to the language!")
 
-    def compute(self, word, stack):
+    def lexer(self, word):
+        """
+        Checks if the word contains only terminal symbols that belong to the alphabet
+        """
+        tokens = word.split()
+
+        for token in tokens:
+            if token not in self.terminal_symbols:
+                return False, []
+        return True, tokens
+
+    def sintatic_analysis(self, word, stack):
         print("                     |word: ", word, "|stack:  ", stack)
 
         if len(stack) == 0:
@@ -295,7 +301,7 @@ class Grammar():
                     print("Derivating: ", prod.get_print_string())
 
                     #if this production flow leads to an error, restore the word and the stack and try another possible production
-                    if self.compute(word=word, stack=stack) == -1:
+                    if self.sintatic_analysis(word=word, stack=stack) == -1:
                         stack = stack_copy
                         word = word_copy
                         print("Restoring due to wrong derivation")
@@ -307,7 +313,7 @@ class Grammar():
                 print("Derivating: ", prod.get_print_string())
 
                 #if this production flow leads to an error, restore the word and the stack and try another possible production
-                if self.compute(word=word, stack=stack) == -1:
+                if self.sintatic_analysis(word=word, stack=stack) == -1:
                     stack = stack_copy
                     word = word_copy
                     print("Restoring due to wrong derivation")
